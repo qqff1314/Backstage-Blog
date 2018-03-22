@@ -6,4 +6,4 @@ var app = express();
 app.use('/admin', admin);
 
 
-module.exports = app
+module.exports = app;
