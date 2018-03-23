@@ -5,11 +5,17 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var index = require('./routes/index');
 var app = express();
+var session = require('express-session');
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
-
+app.use(session({
+    secret: 'secret',
+    cookie: {maxAge: 8000000 },  //设置maxAge是80000ms，即80s后session和相应的cookie失效过期
+    resave: false,
+    saveUninitialized: true,
+}));
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
