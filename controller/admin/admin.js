@@ -1,17 +1,17 @@
-const db = require('./../config/db');
+const db = require('../../config/db');
 
 class Admin{
     login(req, res, next){
         let UserPhone = req.body.UserPhone;
         let UserPassword = req.body.UserPassword;
-        if(!UserPhone.replace(/(^\s*)|(\s*$)/g, "")){
+        if(!UserPhone){
             res.send({
                 Status: 201,
                 Msg: '手机号不能为空',
             });
             return;
         }
-        if(!UserPassword.replace(/(^\s*)|(\s*$)/g, "")){
+        if(!UserPassword){
             res.send({
                 Status: 201,
                 Msg: '密码不能为空',
@@ -30,7 +30,7 @@ class Admin{
                 });
                 return;
             }
-            if(data[0].UserPassword !== UserPassword){
+            if(data[0].UserPassword != UserPassword){
                 res.send({
                     Status: 201,
                     Msg: '密码错误',
@@ -44,19 +44,19 @@ class Admin{
                 });
                 return;
             }
-            req.session.user_id = data[0];
+            req.session.user_id = data[0].Id;
             res.send({
                 Status: 200,
                 Msg: '登录成功',
             });
         });
-    }//登录接口
+    }
     logout(req, res, next){
         req.session.user_id = null;
         res.send({
             Status: 200,
             Msg: '退出成功',
         });
-    }//退出接口
+    }
 }
 module.exports = new Admin();
