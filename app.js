@@ -1,11 +1,11 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
-var index = require('./routes/index');
-var app = express();
-var session = require('express-session');
+const createError = require('http-errors');
+const express = require('express');
+const path = require('path');
+const cookieParser = require('cookie-parser');
+const logger = require('morgan');
+const index = require('./routes/index');
+const app = express();
+const session = require('express-session');
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));

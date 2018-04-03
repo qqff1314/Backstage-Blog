@@ -1,10 +1,12 @@
-var express = require('express');
-var Admin = require('../controller/admin/admin');
-var check = require('../middlewares/check');
-var router = express.Router();
+const express = require('express');
+const Admin = require('../controller/admin/admin');
+const Check = require('../middlewares/check');
+const router = express.Router();
 
-router.get('/login', Admin.login);
-router.get('/logout', Admin.logout);
+router.post('/login', Admin.login);
+router.get('/logout',Check.checkAdmin, Admin.logout);
+router.get('/getUserList', Check.checkAdmin,Admin.getUserList);
+
 
 
 module.exports = router;
