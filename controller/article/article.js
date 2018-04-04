@@ -139,9 +139,9 @@ class Article{
     changeClassNum(ClassId,mark){
         return new Promise(function (resolve,reject) {
             let sql;
-            if(mark==='add') sql='update class set ClassArticleNum=ClassArticleNum+1 where Id=';
-            if(mark==='del') sql='update class set ClassArticleNum=ClassArticleNum-1 where Id=';
-            db.query(sql + ClassId, function (err, data) {
+            if(mark==='add') sql='ClassArticleNum+1';
+            if(mark==='del') sql='ClassArticleNum-1';
+            db.query("update class set ClassArticleNum="+sql+" where Id="+ ClassId, function (err, data) {
                 if (err) {
                     reject(err)
                 } else {

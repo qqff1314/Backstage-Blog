@@ -3,10 +3,6 @@ const Crypto = require('crypto-js');
 
 class Admin{
     async login(req, res, next){
-        const user_id = req.session.user_id;
-        if (user_id || Number(user_id)) {
-            delete req.session.user_id;
-        }
         let {UserName,UserPassWord} = req.body;
         try{
             if (!UserName) {
@@ -22,12 +18,10 @@ class Admin{
             return
         }
         const psw=await this.base64encode(UserPassWord);
-        db.query("select * from user where UserName='"+UserName+"'", function (err, data) {
+        db.query("select IsAdmin,Id from user where UserName='"+UserName+"' and UserPassWord='"+psw+"'", function (err, data) {
             try{
                 if (data.length===0) {
                     throw new Error('用户不存在')
-                }else if(psw.toString() !== data[0].UserPassWord.toString()){
-                    throw new Error('密码错误')
                 }else if(data[0].IsAdmin === 0){
                     throw new Error('用户权限不足')
                 }
@@ -73,12 +67,22 @@ class Admin{
             });
             return;
         }
-        db.query("select * from user where IsAdmin<>1 order by Id desc LIMIT "+(Page-1)*Limit+","+Limit, function (err, data) {
+        db.query("select UserName,Id,IsDisable from user order by Id desc LIMIT "+(Page-1)*Limit+","+Limit, function (err, data) {
             res.send({
                 Status: 200,
                 data:{
                     list:data
                 },
+                Msg: '操作成功',
+            });
+        })
+    }
+    setDisable(req, res, next){
+        let {Id} = req.body;
+        db.query("update user set IsDisable=ABS(IsDisable-1) where Id=" + Id,
+            function (err, data) {
+            res.send({
+                Status: 200,
                 Msg: '操作成功',
             });
         })

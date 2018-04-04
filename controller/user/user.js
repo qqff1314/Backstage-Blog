@@ -7,10 +7,6 @@ class User{
         this.register = this.register.bind(this);
     }
     async login(req, res, next){
-        const user_id = req.session.user_id;
-        if (user_id || Number(user_id)) {
-            delete req.session.user_id;
-        }
         let {UserName,UserPassWord} = req.body;
         try{
             if (!UserName) {
@@ -26,12 +22,10 @@ class User{
             return
         }
         const psw=await this.base64encode(UserPassWord);
-        db.query("select * from user where UserName='"+UserName+"'", function (err, data) {
+        db.query("select Id from user where UserName='"+UserName+"' and UserPassWord='"+psw+"'", function (err, data) {
             try{
                 if (data.length===0) {
                     throw new Error('用户不存在')
-                }else if(psw.toString() !== data[0].UserPassWord.toString()){
-                    throw new Error('密码错误')
                 }
             }catch(err){
                 res.send({

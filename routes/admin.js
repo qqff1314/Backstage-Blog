@@ -6,6 +6,7 @@ const router = express.Router();
 router.post('/login', Admin.login);
 router.get('/logout',Check.checkAdmin, Admin.logout);
 router.get('/getUserList', Check.checkAdmin,Admin.getUserList);
+router.post('/setDisable', Check.checkAdmin,Admin.setDisable);//禁言
 
 
 
