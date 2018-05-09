@@ -6,8 +6,9 @@ class Article{
         this.detail = this.detail.bind(this);
         this.add = this.add.bind(this);
         this.del = this.del.bind(this);
+        this.list = this.list.bind(this);
     }
-    list(req, res, next){
+    async list(req, res, next){
         let {Page,Limit} = req.query;
         if(!Page||!Limit){
             res.send({
@@ -16,16 +17,47 @@ class Article{
             });
             return;
         }
-        db.query("select Title,ClassName,ReadNum,Time from article order by Id desc LIMIT "+(Page-1)*Limit+","+Limit, function (err, data) {
+        try{
+            let num=await this.getTotal();
+            let list=await this.getList(Page,Limit);
             res.send({
                 Status: 200,
                 data:{
-                    list:data,
+                    list:list,
+                    Total:num
                 },
                 Msg: '操作成功',
             });
+        }catch(err){
+            res.send({
+                Status: 201,
+                Msg: err.message,
+            });
+        }
+    }
+    getTotal(){
+        return new Promise(function (resolve,reject) {
+            db.query("select count(*) as rows from article", function (err, data) {
+                if (err) {
+                    reject(err)
+                } else {
+                    resolve(data[0].rows)
+                }
+            })
         })
     }
+    getList(Page,Limit){
+        return new Promise(function (resolve,reject) {
+            db.query("select Id,Title,ClassName,ClassId,ReadNum,Time from article order by Id desc LIMIT "+(Page-1)*Limit+","+Limit, function (err, data) {
+                if (err) {
+                    reject(err)
+                } else {
+                    resolve(data)
+                }
+            })
+        })
+    }
+
     async detail(req, res, next){
         let Id = req.query.Id;
         if(!Id){
@@ -64,7 +96,7 @@ class Article{
     }
     getDetail(Id){
         return new Promise(function (resolve,reject) {
-            db.query("select * from article where Id= "+ Id, function (err, data) {
+            db.query("select Title,Detail,IFNULL(Url,'')as Url,ClassId,ClassName,Id from article where Id= "+ Id, function (err, data) {
                 if (err) {
                     reject(err)
                 } else {
@@ -84,7 +116,6 @@ class Article{
         }
         try{
             await this.delArticle(Id);
-            await this.changeClassNum(ClassId,'del');
             res.send({
                 Status: 200,
                 Msg: '操作成功',
@@ -98,7 +129,7 @@ class Article{
     }
     delArticle(Id){
         return new Promise(function (resolve,reject) {
-            db.query("delete from article where Id=" + Id, function (err, data) {
+            db.query("delete from article where Id in (" + Id + ")", function (err, data) {
                 if (err) {
                     reject(err)
                 } else {
@@ -109,10 +140,9 @@ class Article{
     }
     async add(req , res , next){
         let {Title,Detail,ClassId,ClassName,Url} = req.body;
-        let Time= moment().format('YYYY-MM-DD HH:mm:ss').toString();
+        let Time= moment().format('YYYY-MM-DD h:mm:ss').toString();
         try{
             await this.addArticle(Title,Detail,ClassId,ClassName,Url,Time);
-            await this.changeClassNum(ClassId,'add');
             res.send({
                 Status: 200,
                 Msg: '操作成功',
@@ -127,21 +157,7 @@ class Article{
     addArticle(Title,Detail,ClassId,ClassName,Url,Time){
         return new Promise(function (resolve,reject) {
             db.query("insert into article(Title,Detail,ReadNum,Time,ClassId,ClassName,Url,CollectNum) values('"
-                + Title + "','" + Detail + "','"+0+"','"+Time+"','"+ClassId+"',"+ClassName+","+Url+",'"+0+"')", function (err, data) {
-                if (err) {
-                    reject(err)
-                } else {
-                    resolve(data)
-                }
-            })
-        })
-    }
-    changeClassNum(ClassId,mark){
-        return new Promise(function (resolve,reject) {
-            let sql;
-            if(mark==='add') sql='ClassArticleNum+1';
-            if(mark==='del') sql='ClassArticleNum-1';
-            db.query("update class set ClassArticleNum="+sql+" where Id="+ ClassId, function (err, data) {
+                + Title + "','" + Detail + "',"+0+",'"+Time+"','"+ClassId+"','"+ClassName+"','"+Url+"',"+0+")", function (err, data) {
                 if (err) {
                     reject(err)
                 } else {
@@ -151,9 +167,9 @@ class Article{
         })
     }
     edit(req , res , next){
-        let {Title,Detail,ClassId,ClassName,Url,Id} = req.body;
+        let {Title,Detail,Url,ClassId,ClassName,Id} = req.body;
         db.query("update article set Title='"
-            + Title + "',Detail='" + Detail + "',ClassName='" + ClassName + "',Url='" + Url + "',ClassId='" + ClassId +"' where Id=" + Id,
+            + Title + "',Detail='" + Detail + "',Url='" + Url +"',ClassId='" + ClassId +"',ClassName='" + ClassName +"' where Id=" + Id,
             function (err, data) {
             res.send({
                 Status: 200,

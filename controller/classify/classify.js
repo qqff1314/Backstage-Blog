@@ -4,8 +4,8 @@ class Classify{
     constructor(){
         this.del = this.del.bind(this);
     }
-    list(req, res, next){
-        db.query("select * from class order by Id", function (err, data) {
+    async list(req, res, next){
+        db.query("select a.Id,a.ClassName,count(b.ClassId) as ClassArticleNum from class as a left join article as b on a.Id=b.ClassId", function (err, data) {
             res.send({
                 Status: 200,
                 data:{
@@ -24,7 +24,7 @@ class Classify{
             });
             return;
         }
-        db.query("insert into class(ClassName,ClassArticleNum) values('" + ClassName + "','" + 0 + "')",
+        db.query("insert into class(ClassName) values('" + ClassName + "')",
             function (err, data) {
                 res.send({
                     Status: 200,
@@ -42,10 +42,6 @@ class Classify{
             return;
         }
         try{
-            let num = await this.checkNum(Id);
-            if(Number(num[0].ClassArticleNum)!==0) {
-                throw new Error('该分类无法删除')
-            }
             await this.delClass(Id);
             res.send({
                 Status: 200,
@@ -57,17 +53,6 @@ class Classify{
                 Msg: err.message,
             });
         }
-    }
-    checkNum(Id){
-        return new Promise(function (resolve,reject) {
-            db.query("select ClassArticleNum from class where Id=" + Id, function (err, data) {
-                if (err) {
-                    reject(err)
-                } else {
-                    resolve(data)
-                }
-            })
-        })
     }
     delClass(Id){
         return new Promise(function (resolve,reject) {

@@ -1,10 +1,12 @@
 const db = require('../../models/db');
 const Crypto = require('crypto-js');
+const moment = require('moment');//时间控件
 
 
 class User{
     constructor(){
         this.register = this.register.bind(this);
+        this.login = this.login.bind(this);
     }
     async login(req, res, next){
         let {UserName,UserPassWord} = req.body;
@@ -25,7 +27,7 @@ class User{
         db.query("select Id from user where UserName='"+UserName+"' and UserPassWord='"+psw+"'", function (err, data) {
             try{
                 if (data.length===0) {
-                    throw new Error('用户不存在')
+                    throw new Error('用户名或密码错误')
                 }
             }catch(err){
                 res.send({
@@ -101,7 +103,8 @@ class User{
     }
     isReg(UserName,psw,Email){
         return new Promise(function (resolve,reject) {
-            db.query("insert into user(UserName,UserPassWord,Email) values('" + UserName + "','" + psw + "','"+ Email +"')", function (err, data) {
+            let Time= moment().format('YYYY-MM-DD h:mm:ss').toString();
+            db.query("insert into user(UserName,UserPassWord,Email,Time) values('" + UserName + "','" + psw + "','"+ Email +"','"+ Time +"')", function (err, data) {
                 if (err) {
                     reject(err)
                 } else {
