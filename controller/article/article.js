@@ -7,6 +7,7 @@ class Article{
         this.add = this.add.bind(this);
         this.del = this.del.bind(this);
         this.list = this.list.bind(this);
+        this.listSearch = this.listSearch.bind(this);
     }
     async list(req, res, next){
         let {Page,Limit} = req.query;
@@ -57,7 +58,57 @@ class Article{
             })
         })
     }
-
+    //文章列表
+    async listSearch(req, res, next){
+        let {Page,Limit,KeyWord,ClassId} = req.query;
+        if(!Page||!Limit){
+            res.send({
+                Status: 201,
+                Msg: '传参错误',
+            });
+            return;
+        }
+        try{
+            let num=await this.getSearchTotal(KeyWord,ClassId);
+            let list=await this.getSearchList(Page,Limit,KeyWord,ClassId);
+            res.send({
+                Status: 200,
+                data:{
+                    list:list,
+                    Total:num
+                },
+                Msg: '操作成功',
+            });
+        }catch(err){
+            res.send({
+                Status: 201,
+                Msg: err.message,
+            });
+        }
+    }
+    getSearchTotal(KeyWord,ClassId){
+        return new Promise(function (resolve,reject) {
+            db.query("select count(*) as rows from article where Title like '%"+KeyWord+"%' and (ClassId='"+ClassId+"' or '"+ClassId+"'='')", function (err, data) {
+                if (err) {
+                    reject(err)
+                } else {
+                    resolve(data[0].rows)
+                }
+            })
+        })
+    }
+    getSearchList(Page,Limit,KeyWord,ClassId){
+        return new Promise(function (resolve,reject) {
+            db.query("select Title,ClassName,ReadNum,Time from article where Title like '%"+KeyWord+"%' and (ClassId='"+ClassId+"' or '"+ClassId+"'='') order by Id desc LIMIT "+(Page-1)*Limit+","+Limit, function (err, data) {
+                if (err) {
+                    reject(err)
+                } else {
+                    resolve(data)
+                }
+            })
+        })
+    }
+    //搜索文章列表
     async detail(req, res, next){
         let Id = req.query.Id;
         if(!Id){
@@ -82,7 +133,6 @@ class Article{
             });
         }
     }
-
     addReadNum(Id){
         return new Promise(function (resolve,reject) {
             db.query("update article set ReadNum=ReadNum+1 where Id=" + Id, function (err, data) {
@@ -96,7 +146,7 @@ class Article{
     }
     getDetail(Id){
         return new Promise(function (resolve,reject) {
-            db.query("select Title,Detail,IFNULL(Url,'')as Url,ClassId,ClassName,Id from article where Id= "+ Id, function (err, data) {
+            db.query("select Time,Title,Detail,IFNULL(Url,'')as Url,ClassId,ClassName,Id from article where Id= "+ Id, function (err, data) {
                 if (err) {
                     reject(err)
                 } else {
@@ -105,6 +155,7 @@ class Article{
             })
         })
     }
+    //文章详情
     async del(req , res , next){
         let {Id,ClassId} = req.body;
         if(!Id||!ClassId){
@@ -138,6 +189,7 @@ class Article{
             })
         })
     }
+    //删除文章
     async add(req , res , next){
         let {Title,Detail,ClassId,ClassName,Url} = req.body;
         let Time= moment().format('YYYY-MM-DD h:mm:ss').toString();
@@ -166,6 +218,7 @@ class Article{
             })
         })
     }
+    //增加文章
     edit(req , res , next){
         let {Title,Detail,Url,ClassId,ClassName,Id} = req.body;
         db.query("update article set Title='"
@@ -177,5 +230,6 @@ class Article{
             });
         });
     }
+    //编辑文章
 }
 module.exports = new Article();
