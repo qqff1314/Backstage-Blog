@@ -1,4 +1,6 @@
 const db = require('../models/db');
+const moment = require('moment');//时间控件
+
 //200正常 201报错 202登录失效 203已禁言 204无权限
 
 
@@ -48,6 +50,33 @@ class Check {
             next()
         });
     }//是否是管理员
+    async uv(req, res, next){
+         let Date;
+         await db.query("select Time from read  ORDER BY Id DESC LIMIT 1", function (err, data) {
+            res.send({
+                Status: 204,
+                Msg: data,
+            });
+         });
+        // if(req.session.time){
+        //     let start=Date.parse(req.session.time);
+        //     let now=Date.parse(moment().format('YYYY-MM-DD').toString());
+        //     let end=start+86400000;
+        //     if(start<now<end){
+        //
+        //     }else{
+        //         db.query("update read Uv=Uv+1 where ", function (err, data) {})
+        //
+        //     }
+        //
+        // }else{
+        //     // let time=moment().format('YYYY-MM-DD').toString();
+        //
+        //     // req.session.time=time;
+        //     // db.query("insert into article(Time,Uv) values('"+ time + "','" + 1 +")", function (err, data) {})
+        // }
+        next()
+    }
 }
 
 module.exports = new Check();
