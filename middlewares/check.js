@@ -31,24 +31,24 @@ class Check {
 
     }//是否被禁言
     checkAdmin(req, res, next){
-        const user_id = req.session.user_id;
-        if (!user_id || !Number(user_id)) {
-            res.send({
-                Status: 202,
-                Msg: '登录失效',
-            });
-            return
-        }
-        db.query("select * from user where Id=" + user_id, function (err, data) {
-            if(data.IsAdmin===0){
-                res.send({
-                    Status: 204,
-                    Msg: '用户暂无权限',
-                });
-                return;
-            }
+        // const user_id = req.session.user_id;
+        // if (!user_id || !Number(user_id)) {
+        //     res.send({
+        //         Status: 202,
+        //         Msg: '登录失效',
+        //     });
+        //     return
+        // }
+        // db.query("select * from user where Id=" + user_id, function (err, data) {
+        //     if(data.IsAdmin===0){
+        //         res.send({
+        //             Status: 204,
+        //             Msg: '用户暂无权限',
+        //         });
+        //         return;
+        //     }
             next()
-        });
+        // });
     }//是否是管理员
     async uv(req, res, next){
          let Date;

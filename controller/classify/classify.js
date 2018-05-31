@@ -5,7 +5,18 @@ class Classify{
         this.del = this.del.bind(this);
     }
     async list(req, res, next){
-        db.query("select a.Id,a.ClassName,count(b.ClassId) as ClassArticleNum from class as a left join article as b on a.Id=b.ClassId", function (err, data) {
+        db.query("select Id,ClassName from class", function (err, data) {
+            res.send({
+                Status: 200,
+                data:{
+                    list:data,
+                },
+                Msg: '操作成功',
+            });
+        })
+    }
+    pagelist(req, res, next){
+        db.query("select ClassId,ClassName,count(ClassId) ClassArticleNum from article group by ClassId", function (err, data) {
             res.send({
                 Status: 200,
                 data:{

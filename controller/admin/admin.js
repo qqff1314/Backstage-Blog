@@ -23,6 +23,7 @@ class Admin{
             return
         }
         const psw=await this.base64encode(UserPassWord);
+        console.log(psw)
         db.query("select IsAdmin,Id from user where UserName='"+UserName+"' and UserPassWord='"+psw+"'", function (err, data) {
             try{
                 if (data.length===0) {
