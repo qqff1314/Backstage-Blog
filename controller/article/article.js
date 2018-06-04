@@ -99,7 +99,7 @@ class Article{
     }
     getSearchList(Page,Limit,KeyWord,ClassId){
         return new Promise(function (resolve,reject) {
-            db.query("select Title,ClassName,ReadNum,Time from article where Title like '%"+KeyWord+"%' and (ClassId='"+ClassId+"' or '"+ClassId+"'='') order by Id desc LIMIT "+(Page-1)*Limit+","+Limit, function (err, data) {
+            db.query("select Id,Title,ClassName,ReadNum,Time from article where Title like '%"+KeyWord+"%' and (ClassId='"+ClassId+"' or '"+ClassId+"'='') order by Id desc LIMIT "+(Page-1)*Limit+","+Limit, function (err, data) {
                 if (err) {
                     reject(err)
                 } else {
