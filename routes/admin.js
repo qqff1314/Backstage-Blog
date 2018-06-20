@@ -4,11 +4,6 @@ const Check = require('../middlewares/check');
 const router = express.Router();
 
 router.post('/login', Admin.login);
-router.get('/logout',Check.checkAdmin, Admin.logout);
-router.get('/getUserList', Check.checkAdmin,Admin.getUserList);//用户列表
-router.get('/userSearch', Check.checkAdmin,Admin.userSearch);//用户搜索
-router.post('/setDisable', Check.checkAdmin,Admin.setDisable);//禁言
-
-
+router.get('/logout',Check.checkLogin, Admin.logout);
 
 module.exports = router;

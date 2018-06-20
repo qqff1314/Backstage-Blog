@@ -208,8 +208,8 @@ class Article{
     }
     addArticle(Title,Detail,ClassId,ClassName,Url,Time){
         return new Promise(function (resolve,reject) {
-            db.query("insert into article(Title,Detail,ReadNum,Time,ClassId,ClassName,Url,CollectNum) values('"
-                + Title + "','" + Detail + "',"+0+",'"+Time+"','"+ClassId+"','"+ClassName+"','"+Url+"',"+0+")", function (err, data) {
+            db.query("insert into article(Title,Detail,ReadNum,Time,ClassId,ClassName,Url) values('"
+                + Title + "','" + Detail + "',"+0+",'"+Time+"','"+ClassId+"','"+ClassName+"','"+Url+"')", function (err, data) {
                 if (err) {
                     reject(err)
                 } else {

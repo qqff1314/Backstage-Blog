@@ -7,8 +7,8 @@ router.get('/list',Commit.list);
 router.get('/replayList',Check.checkLogin,Commit.replayList);//回复评论
 router.post('/addCommit',Check.checkLogin,Commit.addCommit);//评论
 router.post('/replayCommit',Check.checkLogin,Commit.replayCommit);//回复评论
-router.post('/delCommit',Check.checkAdmin,Commit.delCommit);//删除评论
-router.post('/delReplay',Check.checkAdmin,Commit.delReplay);//删除回复
+router.post('/delCommit',Check.checkLogin,Commit.delCommit);//删除评论
+router.post('/delReplay',Check.checkLogin,Commit.delReplay);//删除回复
 
 
 module.exports = router;
