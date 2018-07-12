@@ -49,7 +49,7 @@ class Article{
     }
     getList(Page,Limit){
         return new Promise(function (resolve,reject) {
-            db.query("select Id,Title,ClassName,ClassId,ReadNum,Time from article order by Id desc LIMIT "+(Page-1)*Limit+","+Limit, function (err, data) {
+            db.query("select Id,Title,ClassName,ClassId,ReadNum,Img,Time from article order by Id desc LIMIT "+(Page-1)*Limit+","+Limit, function (err, data) {
                 if (err) {
                     reject(err)
                 } else {
@@ -99,7 +99,7 @@ class Article{
     }
     getSearchList(Page,Limit,KeyWord,ClassId){
         return new Promise(function (resolve,reject) {
-            db.query("select Id,Title,ClassName,ReadNum,Time from article where Title like '%"+KeyWord+"%' and (ClassId='"+ClassId+"' or '"+ClassId+"'='') order by Id desc LIMIT "+(Page-1)*Limit+","+Limit, function (err, data) {
+            db.query("select Id,Title,ClassName,ReadNum,Img,Time from article where Title like '%"+KeyWord+"%' and (ClassId='"+ClassId+"' or '"+ClassId+"'='') order by Id desc LIMIT "+(Page-1)*Limit+","+Limit, function (err, data) {
                 if (err) {
                     reject(err)
                 } else {
@@ -146,7 +146,7 @@ class Article{
     }
     getDetail(Id){
         return new Promise(function (resolve,reject) {
-            db.query("select Time,Title,Detail,IFNULL(Url,'')as Url,ClassId,ClassName,Id from article where Id= "+ Id, function (err, data) {
+            db.query("select Time,ReadNum,Title,Detail,IFNULL(Url,'')as Url,ClassId,ClassName,Id from article where Id= "+ Id, function (err, data) {
                 if (err) {
                     reject(err)
                 } else {
@@ -207,9 +207,11 @@ class Article{
         }
     }
     addArticle(Title,Detail,ClassId,ClassName,Url,Time){
+        const reg = "<img[^<>]*?\\ssrc=['\"]?(.*?)['\"].*?>";
+        let img = Detail.match(reg)||"";
         return new Promise(function (resolve,reject) {
-            db.query("insert into article(Title,Detail,ReadNum,Time,ClassId,ClassName,Url) values('"
-                + Title + "','" + Detail + "',"+0+",'"+Time+"','"+ClassId+"','"+ClassName+"','"+Url+"')", function (err, data) {
+            db.query("insert into article(Title,Detail,ReadNum,Time,ClassId,ClassName,Url,Img) values('"
+                + Title + "','" + Detail + "',"+0+",'"+Time+"','"+ClassId+"','"+ClassName+"','"+Url+"','"+(img.toString().split(',')[1]||"")+"')", function (err, data) {
                 if (err) {
                     reject(err)
                 } else {

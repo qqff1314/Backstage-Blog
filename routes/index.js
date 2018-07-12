@@ -12,7 +12,6 @@ app.use('/api/admin', admin);//管理员模块
 app.use('/api/article',article);//文章模块
 app.use('/api/classify',classify);//分类模块
 app.use('/api/com',com);//共用模块
-
 app.use('/api/commit',commit);//评论模块
 
 
