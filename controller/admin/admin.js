@@ -20,8 +20,7 @@ class Admin{
             });
             return
         }
-        const psw=await this.base64encode(UserPassWord);
-        db.query("select Id from user where UserName='"+UserName+"' and UserPassWord='"+psw+"'", function (err, data) {
+        db.query("select Id from user where UserName='"+UserName+"' and UserPassWord='"+UserPassWord+"'", function (err, data) {
             try{
                 if (data.length===0) {
                     throw new Error('用户名或密码错误')
@@ -57,6 +56,9 @@ class Admin{
     //base64加密
     base64encode(data){
         return Crypto.enc.Base64.stringify(Crypto.enc.Utf8.parse(JSON.stringify(data)));
+    }
+    base64decode(data){
+        return JSON.parse(Crypto.enc.Base64.parse(data).toString(Crypto.enc.Utf8));
     }
 }
 module.exports = new Admin();
