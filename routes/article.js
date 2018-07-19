@@ -7,7 +7,6 @@ router.get('/list',  Article.list);//列表
 router.get('/detail',Article.detail);//详情
 router.get('/listSearch',Article.listSearch);//文章筛选
 
-router.get('/admin/list',  Check.checkLogin,Article.list);//列表
 router.get('/admin/detail',Check.checkLogin,Article.detail);//详情
 router.get('/admin/listSearch',Check.checkLogin,Article.listSearch);//文章筛选
 router.post('/del',  Check.checkLogin,Article.del);//删除

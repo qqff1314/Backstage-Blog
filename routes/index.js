@@ -5,6 +5,7 @@ const classify =require('./classify');
 const express  =require('express');
 const commit   =require('./commit');
 const com      =require('./com');
+const message  =require('./message');
 
 const app = express();
 
@@ -13,6 +14,7 @@ app.use('/api/article',article);//文章模块
 app.use('/api/classify',classify);//分类模块
 app.use('/api/com',com);//共用模块
 app.use('/api/commit',commit);//评论模块
+app.use('/api/message',message);//留言模块
 
 
 
