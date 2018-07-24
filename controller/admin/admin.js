@@ -41,7 +41,7 @@ class Admin{
     }
     logout(req, res){
         try{
-            delete req.session.user_id;
+            req.session.user_id && delete req.session.user_id;
             res.send({
                 Status: 200,
                 Msg: '退出成功'

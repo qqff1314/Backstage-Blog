@@ -157,8 +157,8 @@ class Article{
     }
     //文章详情
     async del(req , res , next){
-        let {Id,ClassId} = req.body;
-        if(!Id||!ClassId){
+        let {Id} = req.body;
+        if(!Id){
             res.send({
                 Status: 201,
                 Msg: '传参错误',
