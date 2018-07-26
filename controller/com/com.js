@@ -5,7 +5,7 @@ class Com{
         res.send({
             Status: 200,
             data:{
-                Url:'http://'+req.host+':3001/upload/'+req.file.filename,
+                Url:'http://'+req.host+'/upload/'+req.file.filename,
             },
             Msg: '操作成功',
         });
