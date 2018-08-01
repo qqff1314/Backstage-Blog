@@ -225,8 +225,10 @@ class Article{
     //增加文章
     edit(req , res , next){
         let {Title,Detail,Url,ClassId,ClassName,Id} = req.body;
-        db.query("update article set Title='"
-            + Title + "',Detail='" + Detail + "',Url='" + Url +"',ClassId='" + ClassId +"',ClassName='" + ClassName +"' where Id=" + Id,
+        const reg = "<img[^<>]*?\\ssrc=['\"]?(.*?)['\"].*?>";
+        let img = Detail.match(reg)||"";
+        db.query("update article set Title=?,Detail=?,Url?,ClassId=?',ClassName=?,Img=? where Id=?",
+            [Title,Detail,Url,ClassId,ClassName,(img.toString().split(',')[1]||""),Id],
             function (err, data) {
             res.send({
                 Status: 200,

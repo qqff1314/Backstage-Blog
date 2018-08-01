@@ -1,17 +1,21 @@
-var mysql = require('mysql');
-var pool = mysql.createPool({
+const mysql = require('mysql');
+const pool = mysql.createPool({
     connectionLimit : 100, //important
     host: 'localhost',
     user: 'root',
     password: '123456',
     database: 'myBlog'
 });
-function query(sql, callback) {
+function query(sql,params, callback) {
+    if(typeof params === "function"){
+        callback=params;
+        params=[]
+    }
     pool.getConnection(function (err, connection) {
         if(err){
             callback(err,null);
         }else{
-            connection.query(sql, function (err, rows) {
+            connection.query(sql,params,function (err, rows) {
                 callback(err, rows);
                 connection.release();//释放链接
             });
