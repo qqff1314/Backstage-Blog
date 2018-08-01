@@ -6,12 +6,12 @@ var pool = mysql.createPool({
     password: '123456',
     database: 'myBlog'
 });
-function query(sql, callback) {
+function query(sql,params, callback) {
     pool.getConnection(function (err, connection) {
         if(err){
             callback(err,null);
         }else{
-            connection.query(sql, function (err, rows) {
+            connection.query(sql,params, function (err, rows) {
                 callback(err, rows);
                 connection.release();//释放链接
             });

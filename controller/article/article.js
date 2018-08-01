@@ -209,9 +209,11 @@ class Article{
     addArticle(Title,Detail,ClassId,ClassName,Url,Time){
         const reg = "<img[^<>]*?\\ssrc=['\"]?(.*?)['\"].*?>";
         let img = Detail.match(reg)||"";
+        let Sql = "insert into article(Title,Detail,ReadNum,Time,ClassId,ClassName,Url,Img) VALUES(?,?,?,?,?,?,?,?)";
+        let Params = [Title, Detail,0,Time,ClassId,ClassName,Url,(img.toString().split(',')[1]||"")];
+
         return new Promise(function (resolve,reject) {
-            db.query("insert into article(Title,Detail,ReadNum,Time,ClassId,ClassName,Url,Img) values('"
-                + Title + "','" + Detail + "',"+0+",'"+Time+"','"+ClassId+"','"+ClassName+"','"+Url+"','"+(img.toString().split(',')[1]||"")+"')", function (err, data) {
+            db.query(Sql,Params, function (err, data) {
                 if (err) {
                     reject(err)
                 } else {
