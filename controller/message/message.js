@@ -80,21 +80,24 @@ class Message{
             return;
         }
         let Time= moment().format('YYYY-MM-DD h:mm:ss').toString();
-        db.query("insert into message(Content,Time) values('"+Content+"','"+Time+"')",function (err, data) {
+        db.query("insert into message(Content,Time) values('"+Content+"','"+Time+"')",function (err) {
             if (err) {
                 res.send({
-                    Status: 200,
+                    Status: 201,
                     Msg: err,
                 });
             } else {
-                res.send({
-                    Status: 200,
-                    data:{
-                        Content:Content,
-                        Time:Time
-                    },
-                    Msg: '操作成功',
-                });
+                db.query("select max(id) as Id from message",function (err,data) {
+                    res.send({
+                        Status: 200,
+                        data:{
+                            Content:Content,
+                            Time:Time,
+                            Id:data[0].Id
+                        },
+                        Msg: '操作成功',
+                    });
+                })
             }
         })
     }
