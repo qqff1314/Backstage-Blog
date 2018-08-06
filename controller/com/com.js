@@ -11,10 +11,19 @@ class Com{
             Msg: '操作成功',
         });
     }
-    pv(req, res){
+    pvAdd(req, res){
         db.query("UPDATE pv set Pv=Pv+1 WHERE 1 ORDER BY Id DESC LIMIT 1", function (err, data) {
             res.send({
                 Status: 200,
+                Msg: '操作成功',
+            });
+        })
+    }
+    pvTotal(req, res){
+        db.query("SELECT SUM(Pv) as Total FROM pv where Pv>0", function (err, data) {
+            res.send({
+                Status: 200,
+                data:data[0].Total||0,
                 Msg: '操作成功',
             });
         })
