@@ -1,3 +1,4 @@
+const db = require('../../models/db');
 class Com{
     constructor(){
     }
@@ -9,6 +10,14 @@ class Com{
             },
             Msg: '操作成功',
         });
+    }
+    pv(req, res){
+        db.query("UPDATE pv set Pv=Pv+1 WHERE 1 ORDER BY Id DESC LIMIT 1", function (err, data) {
+            res.send({
+                Status: 200,
+                Msg: '操作成功',
+            });
+        })
     }
 }
 module.exports = new Com();
