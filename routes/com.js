@@ -20,8 +20,7 @@ const upload = multer({storage: storge});
 
 //每日数据插入
 function scheduleCronstyle(){
-    schedule.scheduleJob('30 * * * * *', function(){
-        console.log(111)
+    schedule.scheduleJob('1 1 1 * * *', function(){
         let Time= moment().format('YYYY-MM-DD').toString();
         db.query("insert into pv(Time,Pv) VALUES('"+Time+"',0)",function(err,data){});
     });
