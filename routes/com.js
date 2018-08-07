@@ -19,10 +19,8 @@ const storge = multer.diskStorage({
 const upload = multer({storage: storge});
 
 //每日数据插入
-const rule = new schedule.RecurrenceRule();
-rule.hour =0;rule.minute =0;rule.second =0;
 function scheduleCronstyle(){
-    schedule.scheduleJob(rule, function(){
+    schedule.scheduleJob('0 1 0 * * *', function(){
         let Time= moment().format('YYYY-MM-DD').toString();
         db.query("insert into pv(Time,Pv) VALUES('"+Time+"',0)",function(err,data){});
     });
