@@ -22,8 +22,8 @@ const upload = multer({storage: storge});
 function scheduleCronstyle(){
     schedule.scheduleJob('30 * * * * *', function(){
         console.log(111)
-        // let Time= moment().format('YYYY-MM-DD').toString();
-        // db.query("insert into pv(Time,Pv) VALUES('"+Time+"',0)",function(err,data){});
+        let Time= moment().format('YYYY-MM-DD').toString();
+        db.query("insert into pv(Time,Pv) VALUES('"+Time+"',0)",function(err,data){});
     });
 }
 scheduleCronstyle();
