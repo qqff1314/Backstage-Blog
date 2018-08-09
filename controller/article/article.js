@@ -227,7 +227,7 @@ class Article{
         let {Title,Detail,Url,ClassId,ClassName,Id} = req.body;
         const reg = "<img[^<>]*?\\ssrc=['\"]?(.*?)['\"].*?>";
         let img = Detail.match(reg)||"";
-        db.query("update article set Title=?,Detail=?,Url?,ClassId=?',ClassName=?,Img=? where Id=?",
+        db.query("update article set Title=?,Detail=?,Url=?,ClassId=?,ClassName=?,Img=? where Id=?",
             [Title,Detail,Url,ClassId,ClassName,(img.toString().split(',')[1]||""),Id],
             function (err, data) {
             res.send({

@@ -30,6 +30,7 @@ scheduleCronstyle();
 
 
 router.post('/admin/upload',Check.checkLogin,upload.single('file'),Com.upload);
+router.get('/admin/pvList',Check.checkLogin,Com.pvList);
 router.get('/pvAdd',Com.pvAdd);
 router.get('/pvTotal',Com.pvTotal);
 
