@@ -192,7 +192,7 @@ class Article{
     //删除文章
     async add(req , res , next){
         let {Title,Detail,ClassId,ClassName,Url} = req.body;
-        let Time= moment().format('YYYY-MM-DD h:mm:ss').toString();
+        let Time= moment().format('YYYY-MM-DD HH:mm:ss').toString();
         try{
             await this.addArticle(Title,Detail,ClassId,ClassName,Url,Time);
             res.send({
