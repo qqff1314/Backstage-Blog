@@ -29,7 +29,7 @@ class Com{
         })
     }
     pvList(req, res){
-        db.query("SELECT * FROM pv order by id asc limit 10", function (err, data) {
+        db.query("SELECT * FROM pv order by Time desc limit 10", function (err, data) {
             res.send({
                 Status: 200,
                 data:data||[],
