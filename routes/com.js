@@ -17,7 +17,6 @@ const storge = multer.diskStorage({
     }
 });
 const upload = multer({storage: storge});
-
 //每日数据插入
 function scheduleCronstyle(){
     schedule.scheduleJob('1 1 1 * * *', function(){

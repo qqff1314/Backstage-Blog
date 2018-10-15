@@ -7,18 +7,17 @@ const index = require('./routes/index');
 const app = express();
 const session = require('express-session');
 
-app.all('*', function(req, res, next) {
+// app.all('*', function(req, res, next) {
   // res.header("Access-Control-Allow-Origin", "*");
   // res.header("Access-Control-Allow-Headers", "Content-Type,Content-Length, Authorization, Accept,X-Requested-With");
   // res.header("Access-Control-Allow-Methods","PUT,POST,GET,DELETE,OPTIONS");
-
-  res.header("X-Powered-By",' 3.2.1');
-  res.header("Content-Type", "application/json;charset=utf-8");
-  res.header("Cache-Control", "no-cache, no-store, must-revalidate");
-  res.header("Pragma", "no-cache");
-  res.header("Expires", 0);
-  next();
-});
+  // res.header("X-Powered-By",' 3.2.1');
+  // res.header("Content-Type", "application/json;charset=utf-8");
+  // res.header("Cache-Control", "no-cache, no-store, must-revalidate");
+  // res.header("Pragma", "no-cache");
+  // res.header("Expires", 0);
+//   next();
+// });
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');

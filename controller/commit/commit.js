@@ -88,8 +88,7 @@ class Commit{
     }
     putCommit(CommentUserName,Comment,CommentArticleId,CommentTime){
         return new Promise(function (resolve,reject) {
-            db.query("insert into comment(CommentUserName,Comment,CommentArticleId,CommentTime) values('" +
-                CommentUserName+ "','" + Comment+ "','" + CommentArticleId+ "','" + CommentTime + "')",
+            db.query("insert into comment(CommentUserName,Comment,CommentArticleId,CommentTime) values(?,?,?,?)",[CommentUserName,Comment,CommentArticleId,CommentTime],
                 function (err, data) {
                     if (err) {
                         reject(err)
@@ -229,8 +228,7 @@ class Commit{
     }
     replay(ReplayContent,ReplayTime,ReplayUserName,CommentId,CommentArticleId,IsAdmin){
         return new Promise(function (resolve,reject) {
-            db.query("insert into replay(ReplayContent,ReplayTime,ReplayUserName,CommentId,CommentArticleId,IsAdmin) values('" +
-                ReplayContent + "','" + ReplayTime+ "','" + ReplayUserName+ "','" + CommentId+"','" + CommentArticleId+"'," + IsAdmin+ ")",
+            db.query("insert into replay(ReplayContent,ReplayTime,ReplayUserName,CommentId,CommentArticleId,IsAdmin) values(?,?,?,?,?,?)",[ReplayContent,ReplayTime,ReplayUserName,CommentId,CommentArticleId,IsAdmin],
                 function (err, data) {
                     if (err) {
                         reject(err)

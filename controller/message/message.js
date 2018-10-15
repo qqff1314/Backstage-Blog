@@ -80,7 +80,7 @@ class Message{
             return;
         }
         let Time= moment().format('YYYY-MM-DD  HH:mm:ss').toString();
-        db.query("insert into message(Content,Time) values('"+Content+"','"+Time+"')",function (err) {
+        db.query("insert into message(Content,Time) values(?,?)",[Content,Time],function (err) {
             if (err) {
                 res.send({
                     Status: 201,
