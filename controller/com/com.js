@@ -1,41 +1,35 @@
 const db = require('../../models/db');
+const fs = require('fs');
+const qn = require('qn');
+const client = qn.create({
+    accessKey: 'wc2nF8r4lYiDIdhcfpZv33FE-5U9UyDgWDOV3HPI',
+    secretKey: 'lLmILE5jl8XTcxsKAQMl0lDpvX8AKnTLOgTMXxjo',
+    bucket: 'blog',
+    origin: 'http://resource.mxxxy.cn'
+})
 class Com{
     constructor(){
     }
     upload(req, res){
-        res.send({
-            Status: 200,
-            data:{
-                Url:'http://mxxxy.cn:3001/upload/'+req.file.filename,
-            },
-            Msg: '操作成功',
+        let filePath='./public/upload/'+req.file.filename
+        client.uploadFile(filePath, {key: `/${req.file.filename}`}, function (err1, result) {
+            if (err1) {
+                res.json({
+                    Status: 201,
+                    Msg: '上传失败'
+                });
+            } else {
+                res.json({
+                    Status: 200,
+                    result: {
+                        path: result.url
+                    },
+                    Msg: '操作成功',
+                })
+            }
+            // 上传之后删除本地文件
+            fs.unlinkSync(filePath);
         });
-    }
-    pvAdd(req, res){
-        db.query("UPDATE pv set Pv=Pv+1 WHERE 1 ORDER BY Id DESC LIMIT 1", function (err, data) {
-            res.send({
-                Status: 200,
-                Msg: '操作成功',
-            });
-        })
-    }
-    pvTotal(req, res){
-        db.query("SELECT SUM(Pv) as Total FROM pv where Pv>0", function (err, data) {
-            res.send({
-                Status: 200,
-                data:data[0].Total||0,
-                Msg: '操作成功',
-            });
-        })
-    }
-    pvList(req, res){
-        db.query("SELECT * FROM pv order by Id desc limit 10", function (err, data) {
-            res.send({
-                Status: 200,
-                data:data||[],
-                Msg: '操作成功',
-            });
-        })
     }
 }
 module.exports = new Com();

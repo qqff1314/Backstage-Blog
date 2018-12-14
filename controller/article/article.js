@@ -6,59 +6,8 @@ class Article{
         this.detail = this.detail.bind(this);
         this.add = this.add.bind(this);
         this.del = this.del.bind(this);
-        this.list = this.list.bind(this);
         this.listSearch = this.listSearch.bind(this);
     }
-    async list(req, res, next){
-        let {Page,Limit} = req.query;
-        if(!Page||!Limit){
-            res.send({
-                Status: 201,
-                Msg: '传参错误',
-            });
-            return;
-        }
-        try{
-            let num=await this.getTotal();
-            let list=await this.getList(Page,Limit);
-            res.send({
-                Status: 200,
-                data:{
-                    list:list,
-                    Total:num
-                },
-                Msg: '操作成功',
-            });
-        }catch(err){
-            res.send({
-                Status: 201,
-                Msg: err.message,
-            });
-        }
-    }
-    getTotal(){
-        return new Promise(function (resolve,reject) {
-            db.query("select count(*) as rows from article", function (err, data) {
-                if (err) {
-                    reject(err)
-                } else {
-                    resolve(data[0].rows)
-                }
-            })
-        })
-    }
-    getList(Page,Limit){
-        return new Promise(function (resolve,reject) {
-            db.query("select Id,Title,ClassName,ClassId,ReadNum,Img,Time from article order by Id desc LIMIT "+(Page-1)*Limit+","+Limit, function (err, data) {
-                if (err) {
-                    reject(err)
-                } else {
-                    resolve(data)
-                }
-            })
-        })
-    }
-    //文章列表
     async listSearch(req, res, next){
         let {Page,Limit,KeyWord,ClassId} = req.query;
         if(!Page||!Limit){
@@ -119,7 +68,6 @@ class Article{
             return;
         }
         try{
-            await this.addReadNum(Id);
             let data = await this.getDetail(Id);
             res.send({
                 data:data[0],
@@ -133,20 +81,9 @@ class Article{
             });
         }
     }
-    addReadNum(Id){
-        return new Promise(function (resolve,reject) {
-            db.query("update article set ReadNum=ReadNum+1 where Id=" + Id, function (err, data) {
-                if (err) {
-                    reject(err)
-                } else {
-                    resolve(data)
-                }
-            })
-        })
-    }
     getDetail(Id){
         return new Promise(function (resolve,reject) {
-            db.query("select Time,ReadNum,Title,Detail,IFNULL(Url,'')as Url,ClassId,ClassName,Id from article where Id= "+ Id, function (err, data) {
+            db.query("select Time,ReadNum,Title,Img,Detail,IFNULL(Url,'')as Url,ClassId,ClassName,Id from article where Id= "+ Id, function (err, data) {
                 if (err) {
                     reject(err)
                 } else {
@@ -191,10 +128,10 @@ class Article{
     }
     //删除文章
     async add(req , res , next){
-        let {Title,Detail,ClassId,ClassName,Url} = req.body;
+        let {Title,Detail,ClassId,ClassName,Url,Img} = req.body;
         let Time= moment().format('YYYY-MM-DD HH:mm:ss').toString();
         try{
-            await this.addArticle(Title,Detail,ClassId,ClassName,Url,Time);
+            await this.addArticle(Title,Detail,ClassId,ClassName,Url,Time,Img);
             res.send({
                 Status: 200,
                 Msg: '操作成功',
@@ -206,12 +143,14 @@ class Article{
             });
         }
     }
-    addArticle(Title,Detail,ClassId,ClassName,Url,Time){
-        const reg = "<img[^<>]*?\\ssrc=['\"]?(.*?)['\"].*?>";
-        let img = Detail.match(reg)||"";
+    addArticle(Title,Detail,ClassId,ClassName,Url,Time,Img){
+        if(!Img){
+            const reg = "<img[^<>]*?\\ssrc=['\"]?(.*?)['\"].*?>";
+            let img = Detail.match(reg)||"";
+            Img=img.toString().split(',')[1]||"";
+        }
         let Sql = "insert into article(Title,Detail,ReadNum,Time,ClassId,ClassName,Url,Img) VALUES(?,?,?,?,?,?,?,?)";
-        let Params = [Title, Detail,0,Time,ClassId,ClassName,Url,(img.toString().split(',')[1]||"")];
-
+        let Params = [Title, Detail,0,Time,ClassId,ClassName,Url,Img];
         return new Promise(function (resolve,reject) {
             db.query(Sql,Params, function (err, data) {
                 if (err) {
@@ -224,11 +163,14 @@ class Article{
     }
     //增加文章
     edit(req , res , next){
-        let {Title,Detail,Url,ClassId,ClassName,Id} = req.body;
-        const reg = "<img[^<>]*?\\ssrc=['\"]?(.*?)['\"].*?>";
-        let img = Detail.match(reg)||"";
+        let {Title,Detail,Url,ClassId,ClassName,Id,Img} = req.body;
+        if(!Img){
+            const reg = "<img[^<>]*?\\ssrc=['\"]?(.*?)['\"].*?>";
+            let img = Detail.match(reg)||"";
+            Img=img.toString().split(',')[1]||"";
+        }
         db.query("update article set Title=?,Detail=?,Url=?,ClassId=?,ClassName=?,Img=? where Id=?",
-            [Title,Detail,Url,ClassId,ClassName,(img.toString().split(',')[1]||""),Id],
+            [Title,Detail,Url,ClassId,ClassName,Img,Id],
             function (err, data) {
             res.send({
                 Status: 200,
