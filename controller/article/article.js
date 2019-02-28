@@ -75,13 +75,13 @@ class Article{
                     data=JSON.parse(data)
                     data.map(v=>{ if(v.Id==Id) {
                         detail=v
-                        detail.redis=true
+                        detail.Redis=true
                     }})
                 }
             })
             if(!detail.Id) {
                 detail = await this.getDetail(Id);
-                detail.redis=false
+                detail.Redis=false
             }
             res.send({
                 data:detail,
