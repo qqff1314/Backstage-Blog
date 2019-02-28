@@ -73,10 +73,16 @@ class Article{
             await redis.get('pageDetail').then((data)=>{
                 if(data) {
                     data=JSON.parse(data)
-                    data.map(v=>{ if(v.Id==Id) detail=v})
+                    data.map(v=>{ if(v.Id==Id) {
+                        detail=v
+                        detail.redis=true
+                    }})
                 }
             })
-            if(!detail.Id) detail = await this.getDetail(Id);
+            if(!detail.Id) {
+                detail = await this.getDetail(Id);
+                detail.redis=false
+            }
             res.send({
                 data:detail,
                 Status: 200,
