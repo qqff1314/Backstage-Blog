@@ -1,4 +1,5 @@
 const db = require('../../models/db');
+const redis = require('../../models/redis');
 const moment = require('moment');//时间控件
 
 class Article{
@@ -68,9 +69,16 @@ class Article{
             return;
         }
         try{
-            let data = await this.getDetail(Id);
+            let detail={}
+            await redis.get('pageDetail').then((data)=>{
+                if(data) {
+                    data=JSON.parse(data)
+                    data.map(v=>{ if(v.Id==Id) detail=v})
+                }
+            })
+            if(!detail.Id) detail = await this.getDetail(Id);
             res.send({
-                data:data[0],
+                data:detail,
                 Status: 200,
                 Msg: '操作成功',
             });
@@ -87,7 +95,18 @@ class Article{
                 if (err) {
                     reject(err)
                 } else {
-                    resolve(data)
+                    if(data[0]){
+                        redis.get('pageDetail').then((val)=>{
+                            if(val) {
+                                val=JSON.parse(val)
+                                val.push(data[0])
+                            }else{
+                                val=[data[0]]
+                            }
+                            redis.set('pageDetail',JSON.stringify(val))
+                        })
+                    }
+                    resolve(data[0])
                 }
             })
         })
