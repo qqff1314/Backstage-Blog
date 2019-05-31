@@ -3,7 +3,7 @@ const pool = mysql.createPool({
     connectionLimit : 100, //important
     host: 'localhost',
     user: 'root',
-    password: '123456',
+    password: '892433342ZXC@qq',
     database: 'myBlog'
 });
 function query(sql,params, callback) {
