@@ -4,9 +4,10 @@ const pool = mysql.createPool({
     host: 'localhost',
     user: 'root',
     password: '892433342ZXC@qq',
-    database: 'myBlog'
+    database: 'myBlog',
+    port:3506
 });
-function query(sql,params, callback) {
+function query(sql,params, callback) { 
     if(typeof params === "function"){
         callback=params;
         params=[]
