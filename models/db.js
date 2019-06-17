@@ -5,7 +5,7 @@ const pool = mysql.createPool({
     user: 'root',
     password: '892433342ZXC@qq',
     database: 'myBlog',
-    // port:3506
+    port:3506
 });
 function query(sql,params, callback) { 
     if(typeof params === "function"){
