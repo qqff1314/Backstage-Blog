@@ -201,7 +201,7 @@ class Article{
             redis.get('pageDetail').then((data)=>{
                 if(data) {
                     let map=JSON.parse(data).filter(v=>{return v.Id!=Id})
-                    redis.set('pageDetail',map)
+                    redis.set('pageDetail',JSON.stringify(map))
                 }
             })
             res.send({
