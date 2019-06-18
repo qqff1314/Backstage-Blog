@@ -194,9 +194,16 @@ class Article{
             let img = Detail.match(reg)||"";
             Img=img.toString().split(',')[1]||"";
         }
+        
         db.query("update article set Title=?,Detail=?,Url=?,ClassId=?,ClassName=?,Img=? where Id=?",
             [Title,Detail,Url,ClassId,ClassName,Img,Id],
             function (err, data) {
+            redis.get('pageDetail').then((data)=>{
+                if(data) {
+                    let map=JSON.parse(data).filter(v=>{return v.Id!=Id})
+                    redis.set('pageDetail',map)
+                }
+            })
             res.send({
                 Status: 200,
                 Msg: '操作成功',
